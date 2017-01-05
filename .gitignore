@@ -1,0 +1,2 @@
+# Ignore mysql config file
+mysql/config.go
