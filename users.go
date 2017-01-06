@@ -1,4 +1,4 @@
-package main
+package forum
 
 type User struct {
 	ID       int
@@ -6,6 +6,10 @@ type User struct {
 	Password string
 	Role     int
 	Removed  int
+}
+
+type Users struct {
+	Users []User
 }
 
 type UserService interface {
