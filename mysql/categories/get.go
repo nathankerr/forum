@@ -12,7 +12,6 @@ var db *sql.DB
 var err error
 
 func Get(id int) (*forum.Category, error) {
-
 	var u forum.Category
 
 	// Connect to database.

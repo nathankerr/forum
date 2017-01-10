@@ -8,9 +8,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Getall() (*forum.Category, error) {
-
+func Getall() ([]forum.Category, error) {
 	var u forum.Category
+	var result []forum.Category
 
 	// Connect to database.
 	db, err = sql.Open("mysql", mysql.Username+":"+mysql.Password+"@/"+mysql.Database)
@@ -37,8 +37,11 @@ func Getall() (*forum.Category, error) {
 		if err := rows.Scan(&u.ID, &u.Name, &u.Position); err != nil {
 			return nil, err
 		}
+
+		// Add row scan to result array
+		result = append(result, u)
 	}
 
 	// Return categories.
-	return &u, nil
+	return result, nil
 }

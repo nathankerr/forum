@@ -6,6 +6,7 @@ type Post struct {
 	User     int
 	Title    string
 	Thread   int
+	Content  string
 	Created  int
 	Modified int
 	Removed  int

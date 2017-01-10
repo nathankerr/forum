@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/mysql"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Create() ([]byte, error) {
+func Create(post forum.Post) ([]byte, error) {
 	// Connect to database.
 	db, err = sql.Open("mysql", mysql.Username+":"+mysql.Password+"@/"+mysql.Database)
 	if err != nil {
@@ -23,7 +24,7 @@ func Create() ([]byte, error) {
 	}
 
 	// Save post in database.
-	_, err = db.Exec("INSERT INTO posts(is_sticky, user, title, thread, created) VALUES (?, ?, ?, ?, ?)", 0, 1, "First post", 1, int32(time.Now().Unix()))
+	_, err = db.Exec("INSERT INTO posts(is_sticky, user, title, thread, content, created) VALUES (?, ?, ?, ?, ?, ?)", post.IsSticky, post.User, post.Title, post.Thread, post.Content, int32(time.Now().Unix()))
 	if err != nil {
 		return nil, err
 	}

@@ -3,14 +3,15 @@ package users
 import (
 	"database/sql"
 
+	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/mysql"
 	"github.com/dhenkes/forum/utils"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Create() ([]byte, error) {
+func Create(user forum.User) ([]byte, error) {
 	// Hash the password.
-	hash, err := utils.HashPassword("test")
+	hash, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +33,7 @@ func Create() ([]byte, error) {
 	}
 
 	// Save user in database.
-	_, err = db.Exec("INSERT INTO users(username, password, role) VALUES (?, ?, ?)", "dhenkes", hashString, 2)
+	_, err = db.Exec("INSERT INTO users(username, password, role) VALUES (?, ?, ?)", user.Username, hashString, user.Role)
 	if err != nil {
 		return nil, err
 	}
