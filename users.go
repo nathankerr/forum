@@ -1,20 +1,20 @@
 package forum
 
 type User struct {
-	ID       int
-	Username string
-	Password string
-	Role     int
-	Removed  int
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"-"`
+	Role     int    `json:"-"`
+	Removed  int    `json:"-"`
 }
 
 type Users struct {
 	Users []User
 }
 
-type UserService interface {
-	User(id int) (*User, error)
-	Users() ([]*User, error)
-	CreateUser(u *User) error
-	DeleteUser(id int) error
+type UsersResource interface {
+	Get() (int, interface{}, error)
+	Post() (int, interface{}, error)
+	Put() (int, interface{}, error)
+	Delete() (int, interface{}, error)
 }

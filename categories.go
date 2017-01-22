@@ -1,9 +1,9 @@
 package forum
 
 type Category struct {
-	ID       int
-	Name     string
-	Position int
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Position int    `json:"position"`
 }
 
 type Categories struct {

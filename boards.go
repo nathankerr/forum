@@ -1,10 +1,10 @@
 package forum
 
 type Board struct {
-	ID       int
-	Name     string
-	Category int
-	Position int
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Category int    `json:"category"`
+	Position int    `json:"position"`
 }
 
 type Boards struct {

@@ -1,35 +1,24 @@
 package main
 
 import (
-	// 	"fmt"
-
+	"github.com/dhenkes/forum/http"
 	"github.com/dhenkes/forum/mysql"
-	// 	"github.com/dhenkes/forum/mysql/users"
 )
 
 func main() {
-
-	// Check if tables exist.
 	mysql.CheckTables()
 
-	// // Get user with ID 1.
-	// user, err := users.Get(1)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Println(user)
-
-	// // Get all users.
-	// users, err := users.Getall()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Println(users)
-
-	// // Create user.
-	// res, err := users.Create()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Println(string(res[:]))
+	s := http.CreateServer(":8080")
+	s.Router.GET("/", http.Index)
+	s.Router.GET("/users", http.UsersGetAll)
+	s.Router.GET("/users/:id", http.UsersGetByID)
+	s.Router.GET("/boards", http.BoardsGetAll)
+	s.Router.GET("/boards/:id", http.BoardsGetByID)
+	s.Router.GET("/categories", http.CategoriesGetAll)
+	s.Router.GET("/categories/:id", http.CategoriesGetByID)
+	s.Router.GET("/threads", http.ThreadsGetAll)
+	s.Router.GET("/threads/:id", http.ThreadsGetByID)
+	s.Router.GET("/posts", http.PostsGetAll)
+	s.Router.GET("/posts/:id", http.PostsGetByID)
+	s.Run()
 }

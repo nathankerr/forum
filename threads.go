@@ -1,11 +1,11 @@
 package forum
 
 type Thread struct {
-	ID      int
-	User    int
-	Title   string
-	Board   int
-	Removed int
+	ID      int    `json:"id"`
+	User    int    `json:"user"`
+	Title   string `json:"title"`
+	Board   int    `json:"board"`
+	Removed int    `json:"-"`
 }
 
 type Threads struct {

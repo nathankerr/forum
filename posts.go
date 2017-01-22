@@ -1,15 +1,15 @@
 package forum
 
 type Post struct {
-	ID       int
-	IsSticky int
-	User     int
-	Title    string
-	Thread   int
-	Content  string
-	Created  int
-	Modified int
-	Removed  int
+	ID       int    `json:"id"`
+	IsSticky int    `json:"sticky"`
+	User     int    `json:"user"`
+	Title    string `json:"title"`
+	Thread   int    `json:"thread"`
+	Content  string `json:"content"`
+	Created  int    `json:"created"`
+	Modified int    `json:"modified"`
+	Removed  int    `json:"-"`
 }
 
 type Posts struct {
