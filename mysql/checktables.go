@@ -1,69 +1,22 @@
 package mysql
 
-import (
-	"fmt"
-)
-
-func CheckTables() {
-
-	// Open database connection.
-	OpenConnection()
-	defer CloseConnection()
-
-	// Test connection.
-	err = PingDatabase()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Check if table roles exists.
-	err = createIfNotExists([]byte("roles"))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Check if table categories exists.
-	err = createIfNotExists([]byte("categories"))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Check if table users exists.
-	err = createIfNotExists([]byte("users"))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Check if table tokens exists.
-	err = createIfNotExists([]byte("tokens"))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Check if table boards exists.
-	err = createIfNotExists([]byte("boards"))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Check if table threads exists.
-	err = createIfNotExists([]byte("threads"))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Check if table posts exists.
-	err = createIfNotExists([]byte("posts"))
-	if err != nil {
-		fmt.Println(err)
-	}
-
+// Opens a database connections and checks if all tables exist.
+// If they do not exist, they are being created.
+func (mysql *MySQL) CheckTables() {
+	createIfNotExists(mysql, []byte("roles"))
+	createIfNotExists(mysql, []byte("categories"))
+	createIfNotExists(mysql, []byte("users"))
+	createIfNotExists(mysql, []byte("tokens"))
+	createIfNotExists(mysql, []byte("boards"))
+	createIfNotExists(mysql, []byte("threads"))
+	createIfNotExists(mysql, []byte("posts"))
 }
 
-func createIfNotExists(table []byte) error {
+// Creates tables that do not exist.
+func createIfNotExists(mysql *MySQL, table []byte) {
 	switch string(table) {
 	case "boards":
-		_, err := db.Query(`
+		_, mysql.Err = mysql.DB.Query(`
       CREATE TABLE IF NOT EXISTS boards (
         id int(11) unsigned NOT NULL AUTO_INCREMENT,
         name varchar(120) NOT NULL DEFAULT '',
@@ -74,11 +27,8 @@ func createIfNotExists(table []byte) error {
         CONSTRAINT boards_ibfk_1 FOREIGN KEY (category) REFERENCES categories (id)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `)
-		if err != nil {
-			return err
-		}
 	case "categories":
-		_, err := db.Query(`
+		_, mysql.Err = mysql.DB.Query(`
       CREATE TABLE IF NOT EXISTS categories (
         id int(11) unsigned NOT NULL AUTO_INCREMENT,
         name varchar(120) NOT NULL DEFAULT '',
@@ -86,11 +36,8 @@ func createIfNotExists(table []byte) error {
         PRIMARY KEY (id)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `)
-		if err != nil {
-			return err
-		}
 	case "posts":
-		_, err := db.Query(`
+		_, mysql.Err = mysql.DB.Query(`
       CREATE TABLE IF NOT EXISTS posts (
         id int(11) unsigned NOT NULL AUTO_INCREMENT,
         is_sticky tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -108,11 +55,8 @@ func createIfNotExists(table []byte) error {
         CONSTRAINT posts_ibfk_2 FOREIGN KEY (thread) REFERENCES threads (id)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `)
-		if err != nil {
-			return err
-		}
 	case "threads":
-		_, err := db.Query(`
+		_, mysql.Err = mysql.DB.Query(`
       CREATE TABLE IF NOT EXISTS threads (
         id int(11) unsigned NOT NULL AUTO_INCREMENT,
         user int(11) unsigned NOT NULL,
@@ -126,11 +70,8 @@ func createIfNotExists(table []byte) error {
         CONSTRAINT threads_ibfk_2 FOREIGN KEY (user) REFERENCES users (id)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `)
-		if err != nil {
-			return err
-		}
 	case "tokens":
-		_, err := db.Query(`
+		_, mysql.Err = mysql.DB.Query(`
      CREATE TABLE IF NOT EXISTS tokens (
         id int(11) unsigned NOT NULL AUTO_INCREMENT,
         user int(11) unsigned NOT NULL,
@@ -142,11 +83,8 @@ func createIfNotExists(table []byte) error {
         CONSTRAINT tokens_ibfk_1 FOREIGN KEY (user) REFERENCES users (id)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `)
-		if err != nil {
-			return err
-		}
 	case "users":
-		_, err := db.Query(`
+		_, mysql.Err = mysql.DB.Query(`
       CREATE TABLE IF NOT EXISTS users (
         id int(11) unsigned NOT NULL AUTO_INCREMENT,
         username varchar(16) NOT NULL DEFAULT '',
@@ -158,20 +96,13 @@ func createIfNotExists(table []byte) error {
         CONSTRAINT users_ibfk_1 FOREIGN KEY (role) REFERENCES roles (id)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `)
-		if err != nil {
-			return err
-		}
 	case "roles":
-		_, err := db.Query(`
+		_, mysql.Err = mysql.DB.Query(`
       CREATE TABLE IF NOT EXISTS roles (
         id int(11) unsigned NOT NULL AUTO_INCREMENT,
         name varchar(16) NOT NULL DEFAULT '',
         PRIMARY KEY (id)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `)
-		if err != nil {
-			return err
-		}
 	}
-	return nil
 }

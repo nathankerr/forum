@@ -1,43 +1,25 @@
 package users
 
 import (
-	"database/sql"
-
 	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/mysql"
 	"github.com/dhenkes/forum/utils"
-	_ "github.com/go-sql-driver/mysql"
 )
 
-func Create(user forum.User) ([]byte, error) {
-	// Hash the password.
-	hash, err := utils.HashPassword(user.Password)
-	if err != nil {
-		return nil, err
+// Inserts a user with an encrypted password into the database.
+func Create(mysql *mysql.MySQL, user forum.User) ([]byte, error) {
+	var hash []byte
+	hash, mysql.Err = utils.HashPassword(user.Password)
+	if mysql.Err != nil {
+		return nil, mysql.Err
 	}
 
-	// Convert []byte to string.
 	hashString := string(hash[:])
 
-	// Connect to database.
-	db, err = sql.Open("mysql", mysql.Username+":"+mysql.Password+"@/"+mysql.Database)
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close()
-
-	// Test connection.
-	err = db.Ping()
-	if err != nil {
-		return nil, err
+	_, mysql.Err = mysql.DB.Exec("INSERT INTO users(username, password, role) VALUES (?, ?, ?)", user.Username, hashString, user.Role)
+	if mysql.Err != nil {
+		return nil, mysql.Err
 	}
 
-	// Save user in database.
-	_, err = db.Exec("INSERT INTO users(username, password, role) VALUES (?, ?, ?)", user.Username, hashString, user.Role)
-	if err != nil {
-		return nil, err
-	}
-
-	// Return user.
 	return []byte("User created."), nil
 }

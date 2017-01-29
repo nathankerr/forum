@@ -19,8 +19,8 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Index\n")
 }
 
-func UsersGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	users, err := users.Getall()
+func (s *server) UsersGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	users, err := users.Getall(s.MySQL)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -28,13 +28,13 @@ func UsersGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, string(usersJson), "\n")
 }
 
-func UsersGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (s *server) UsersGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	if err != nil {
 		fmt.Println(err)
 	}
 	u := forum.User{ID: id}
-	user, err := users.Get(u.ID)
+	user, err := users.Get(s.MySQL, u.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -42,8 +42,8 @@ func UsersGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	fmt.Fprint(w, string(userJson), "\n")
 }
 
-func BoardsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	boards, err := boards.Getall()
+func (s *server) BoardsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	boards, err := boards.Getall(s.MySQL)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -51,13 +51,13 @@ func BoardsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, string(boardsJson), "\n")
 }
 
-func BoardsGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (s *server) BoardsGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	if err != nil {
 		fmt.Println(err)
 	}
 	b := forum.Board{ID: id}
-	board, err := boards.Get(b.ID)
+	board, err := boards.Get(s.MySQL, b.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -65,8 +65,8 @@ func BoardsGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	fmt.Fprint(w, string(boardJson), "\n")
 }
 
-func CategoriesGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	categories, err := categories.Getall()
+func (s *server) CategoriesGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	categories, err := categories.Getall(s.MySQL)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -74,13 +74,13 @@ func CategoriesGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 	fmt.Fprint(w, string(categoriesJson), "\n")
 }
 
-func CategoriesGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (s *server) CategoriesGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	if err != nil {
 		fmt.Println(err)
 	}
 	c := forum.Category{ID: id}
-	category, err := categories.Get(c.ID)
+	category, err := categories.Get(s.MySQL, c.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -88,8 +88,8 @@ func CategoriesGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	fmt.Fprint(w, string(categoryJson), "\n")
 }
 
-func ThreadsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	threads, err := threads.Getall()
+func (s *server) ThreadsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	threads, err := threads.Getall(s.MySQL)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -97,13 +97,13 @@ func ThreadsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 	fmt.Fprint(w, string(threadsJson), "\n")
 }
 
-func ThreadsGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (s *server) ThreadsGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	if err != nil {
 		fmt.Println(err)
 	}
 	t := forum.Thread{ID: id}
-	thread, err := threads.Get(t.ID)
+	thread, err := threads.Get(s.MySQL, t.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -111,8 +111,8 @@ func ThreadsGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 	fmt.Fprint(w, string(threadJson), "\n")
 }
 
-func PostsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	posts, err := posts.Getall()
+func (s *server) PostsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	posts, err := posts.Getall(s.MySQL)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -120,13 +120,13 @@ func PostsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, string(postsJson), "\n")
 }
 
-func PostsGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (s *server) PostsGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	if err != nil {
 		fmt.Println(err)
 	}
 	p := forum.Post{ID: id}
-	post, err := posts.Get(p.ID)
+	post, err := posts.Get(s.MySQL, p.ID)
 	if err != nil {
 		fmt.Println(err)
 	}

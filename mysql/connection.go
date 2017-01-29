@@ -6,25 +6,26 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
-var err error
-
-func OpenConnection() error {
-	db, err = sql.Open("mysql", Username+":"+Password+"@/"+Database)
-	if err != nil {
-		return err
-	}
-	return nil
+type MySQL struct {
+	DB  *sql.DB
+	Err error
 }
 
-func PingDatabase() error {
-	err = db.Ping()
-	if err != nil {
-		return err
+// Opens a MySQL database connection and returns a pointer to it.
+func OpenConnection(username string, password string, database string) *MySQL {
+	db, err := sql.Open("mysql", username+":"+password+"@/"+database)
+	return &MySQL{
+		DB:  db,
+		Err: err,
 	}
-	return nil
 }
 
-func CloseConnection() {
-	db.Close()
+// Pings the databse.
+func (mysql *MySQL) PingDatabase() {
+	mysql.Err = mysql.DB.Ping()
+}
+
+// Closes the MySQL database connection.
+func (mysql *MySQL) CloseConnection() {
+	mysql.DB.Close()
 }

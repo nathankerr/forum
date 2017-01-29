@@ -1,40 +1,19 @@
 package users
 
 import (
-	"database/sql"
-
 	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/mysql"
-	_ "github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
-var err error
-
-func Get(id int) (*forum.User, error) {
-
+// Selects the user with the given ID from the database and returns it.
+func Get(mysql *mysql.MySQL, id int) (*forum.User, error) {
 	var u forum.User
 
-	// Connect to database.
-	db, err = sql.Open("mysql", mysql.Username+":"+mysql.Password+"@/"+mysql.Database)
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close()
-
-	// Test connection.
-	err = db.Ping()
-	if err != nil {
-		return nil, err
+	row := mysql.DB.QueryRow("SELECT * FROM users WHERE id = ?", id)
+	mysql.Err = row.Scan(&u.ID, &u.Username, &u.Password, &u.Role, &u.Removed)
+	if mysql.Err != nil {
+		return nil, mysql.Err
 	}
 
-	// Select user.
-	row := db.QueryRow("SELECT * FROM users WHERE id = ?", id)
-	err = row.Scan(&u.ID, &u.Username, &u.Password, &u.Role, &u.Removed)
-	if err != nil {
-		return nil, err
-	}
-
-	// Return user.
 	return &u, nil
 }

@@ -5,43 +5,26 @@ import (
 
 	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/mysql"
-	_ "github.com/go-sql-driver/mysql"
 )
 
-func Getall() ([]forum.Board, error) {
+// Selects all boards from the database and returns them.
+func Getall(mysql *mysql.MySQL) ([]forum.Board, error) {
 	var u forum.Board
 	var result []forum.Board
 
-	// Connect to database.
-	db, err = sql.Open("mysql", mysql.Username+":"+mysql.Password+"@/"+mysql.Database)
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close()
-
-	// Test connection.
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
-
-	// Select boards.
-	rows, err := db.Query("SELECT * FROM boards")
-	if err != nil {
-		return nil, err
+	var rows *sql.Rows
+	rows, mysql.Err = mysql.DB.Query("SELECT * FROM boards")
+	if mysql.Err != nil {
+		return nil, mysql.Err
 	}
 	defer rows.Close()
 
-	// Testing
 	for rows.Next() {
-		if err := rows.Scan(&u.ID, &u.Name, &u.Category, &u.Position); err != nil {
-			return nil, err
+		if mysql.Err = rows.Scan(&u.ID, &u.Name, &u.Category, &u.Position); mysql.Err != nil {
+			return nil, mysql.Err
 		}
-
-		// Add row scan to result array
 		result = append(result, u)
 	}
 
-	// Return boards.
 	return result, nil
 }

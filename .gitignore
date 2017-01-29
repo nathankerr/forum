@@ -1,2 +1,2 @@
 # Ignore mysql config file
-mysql/config.go
+cmd/forum/run.sh

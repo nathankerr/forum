@@ -5,43 +5,26 @@ import (
 
 	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/mysql"
-	_ "github.com/go-sql-driver/mysql"
 )
 
-func Getall() ([]forum.Post, error) {
+// Selects all posts from the database and returns them.
+func Getall(mysql *mysql.MySQL) ([]forum.Post, error) {
 	var u forum.Post
 	var result []forum.Post
 
-	// Connect to database.
-	db, err = sql.Open("mysql", mysql.Username+":"+mysql.Password+"@/"+mysql.Database)
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close()
-
-	// Test connection.
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
-
-	// Select posts.
-	rows, err := db.Query("SELECT * FROM posts")
-	if err != nil {
-		return nil, err
+	var rows *sql.Rows
+	rows, mysql.Err = mysql.DB.Query("SELECT * FROM posts")
+	if mysql.Err != nil {
+		return nil, mysql.Err
 	}
 	defer rows.Close()
 
-	// Testing
 	for rows.Next() {
-		if err := rows.Scan(&u.ID, &u.IsSticky, &u.User, &u.Title, &u.Thread, &u.Content, &u.Created, &u.Modified, &u.Removed); err != nil {
-			return nil, err
+		if mysql.Err = rows.Scan(&u.ID, &u.IsSticky, &u.User, &u.Title, &u.Thread, &u.Content, &u.Created, &u.Modified, &u.Removed); mysql.Err != nil {
+			return nil, mysql.Err
 		}
-
-		// Add row scan to result array
 		result = append(result, u)
 	}
 
-	// Return posts.
 	return result, nil
 }
