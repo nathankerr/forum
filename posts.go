@@ -1,5 +1,6 @@
 package forum
 
+// Post contains the information of one post.
 type Post struct {
 	ID       int    `json:"id"`
 	IsSticky int    `json:"sticky"`
@@ -12,13 +13,7 @@ type Post struct {
 	Removed  int    `json:"-"`
 }
 
+// Posts contains a list of posts.
 type Posts struct {
 	Posts []Post
-}
-
-type PostService interface {
-	Post(id int) (*Post, error)
-	Posts() ([]*Post, error)
-	CreatePost(u *Post) error
-	DeletePost(id int) error
 }

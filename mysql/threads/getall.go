@@ -7,7 +7,7 @@ import (
 	"github.com/dhenkes/forum/mysql"
 )
 
-// Selects all threads from the database and returns them.
+// Getall selects all threads from the database and returns them.
 func Getall(mysql *mysql.MySQL) ([]forum.Thread, error) {
 	var u forum.Thread
 	var result []forum.Thread

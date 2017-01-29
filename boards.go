@@ -1,5 +1,6 @@
 package forum
 
+// Board contains the information of one board.
 type Board struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`
@@ -7,13 +8,7 @@ type Board struct {
 	Position int    `json:"position"`
 }
 
+// Boards contains a list of boards.
 type Boards struct {
 	Boards []Board
-}
-
-type BoardService interface {
-	Board(id int) (*Board, error)
-	Boards() ([]*Board, error)
-	CreateBoard(u *Board) error
-	DeleteBoard(id int) error
 }

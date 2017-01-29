@@ -1,5 +1,6 @@
 package forum
 
+// Thread contains the information of one thread.
 type Thread struct {
 	ID      int    `json:"id"`
 	User    int    `json:"user"`
@@ -8,13 +9,7 @@ type Thread struct {
 	Removed int    `json:"-"`
 }
 
+// Threads contains a list of threads.
 type Threads struct {
 	Threads []Thread
-}
-
-type ThreadService interface {
-	Thread(id int) (*Thread, error)
-	Threads() ([]*Thread, error)
-	CreateThread(u *Thread) error
-	DeleteThread(id int) error
 }

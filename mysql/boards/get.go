@@ -5,7 +5,7 @@ import (
 	"github.com/dhenkes/forum/mysql"
 )
 
-// Selects the board with the given ID from the database and returns it.
+// Get selects the board with the given ID from the database and returns it.
 func Get(mysql *mysql.MySQL, id int) (*forum.Board, error) {
 	var u forum.Board
 

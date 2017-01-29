@@ -1,6 +1,6 @@
 package mysql
 
-// Opens a database connections and checks if all tables exist.
+// CheckTables checks if all tables exist.
 // If they do not exist, they are being created.
 func (mysql *MySQL) CheckTables() {
 	createIfNotExists(mysql, []byte("roles"))

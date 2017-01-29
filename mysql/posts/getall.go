@@ -7,7 +7,7 @@ import (
 	"github.com/dhenkes/forum/mysql"
 )
 
-// Selects all posts from the database and returns them.
+// Getall selects all posts from the database and returns them.
 func Getall(mysql *mysql.MySQL) ([]forum.Post, error) {
 	var u forum.Post
 	var result []forum.Post

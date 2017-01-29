@@ -5,7 +5,7 @@ import (
 	"github.com/dhenkes/forum/mysql"
 )
 
-// Inserts a category into the database.
+// Create inserts a category into the database.
 func Create(mysql *mysql.MySQL, category forum.Category) ([]byte, error) {
 	_, mysql.Err = mysql.DB.Exec("INSERT INTO categories(name, position) VALUES (?, ?)", category.Name, category.Position)
 	if mysql.Err != nil {

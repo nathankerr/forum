@@ -1,5 +1,6 @@
 package forum
 
+// User contains the information of one user.
 type User struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
@@ -8,13 +9,7 @@ type User struct {
 	Removed  int    `json:"-"`
 }
 
+// Users contains a list of all users.
 type Users struct {
 	Users []User
-}
-
-type UsersResource interface {
-	Get() (int, interface{}, error)
-	Post() (int, interface{}, error)
-	Put() (int, interface{}, error)
-	Delete() (int, interface{}, error)
 }

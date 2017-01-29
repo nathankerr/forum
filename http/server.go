@@ -16,7 +16,7 @@ type server struct {
 	MySQL  *mysql.MySQL
 }
 
-// Creates the http server with the given port and initiates a router.
+// CreateServer creates the http server with the given port and initiates a router.
 func CreateServer(port string) *server {
 	return &server{
 		port:   port,
@@ -24,12 +24,12 @@ func CreateServer(port string) *server {
 	}
 }
 
-// Sets MySQL as the database being used.
+// UseMySQL sets MySQL as the database being used.
 func (s *server) UseMySQL(db *mysql.MySQL) {
 	s.MySQL = db
 }
 
-// Starts the http server.
+// Run starts the http server.
 func (s *server) Run() error {
 	log.Fatal(http.ListenAndServe(s.port, s.Router))
 	return nil

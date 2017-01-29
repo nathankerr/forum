@@ -6,7 +6,7 @@ import (
 	"github.com/dhenkes/forum/utils"
 )
 
-// Inserts a user with an encrypted password into the database.
+// Create inserts a user with an encrypted password into the database.
 func Create(mysql *mysql.MySQL, user forum.User) ([]byte, error) {
 	var hash []byte
 	hash, mysql.Err = utils.HashPassword(user.Password)

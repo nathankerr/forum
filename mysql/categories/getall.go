@@ -7,7 +7,7 @@ import (
 	"github.com/dhenkes/forum/mysql"
 )
 
-// Selects all categories from the database and returns them.
+// Getall selects all categories from the database and returns them.
 func Getall(mysql *mysql.MySQL) ([]forum.Category, error) {
 	var u forum.Category
 	var result []forum.Category

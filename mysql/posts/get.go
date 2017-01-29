@@ -5,7 +5,7 @@ import (
 	"github.com/dhenkes/forum/mysql"
 )
 
-// Selects the post with the given ID from the database and returns it.
+// Get selects the post with the given ID from the database and returns it.
 func Get(mysql *mysql.MySQL, id int) (*forum.Post, error) {
 	var u forum.Post
 
