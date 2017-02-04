@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/dhenkes/forum/couchbase"
+	"github.com/dhenkes/forum/handler/users"
 	"github.com/dhenkes/forum/http"
 )
 
@@ -40,17 +41,7 @@ func main() {
 		os.Exit(3)
 	}
 
-	s := http.CreateServer(http_port, cb)
-	// s.Router.GET("/", http.Index)
-	// s.Router.GET("/users", s.UsersGetAll)
-	s.Router.GET("/users/:id", s.UsersGetByID)
-	// s.Router.GET("/boards", s.BoardsGetAll)
-	// s.Router.GET("/boards/:id", s.BoardsGetByID)
-	// s.Router.GET("/categories", s.CategoriesGetAll)
-	// s.Router.GET("/categories/:id", s.CategoriesGetByID)
-	// s.Router.GET("/threads", s.ThreadsGetAll)
-	// s.Router.GET("/threads/:id", s.ThreadsGetByID)
-	// s.Router.GET("/posts", s.PostsGetAll)
-	// s.Router.GET("/posts/:id", s.PostsGetByID)
-	s.Run()
+	http.CreateServer(http_port, cb)
+	http.Server.Router.GET("/users/:id", users.Get)
+	http.Run()
 }

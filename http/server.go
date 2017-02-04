@@ -16,15 +16,17 @@ type server struct {
 	Couchbase *couchbase.Couchbase
 }
 
-func CreateServer(port string, cb *couchbase.Couchbase) *server {
-	return &server{
+var Server server
+
+func CreateServer(port string, cb *couchbase.Couchbase) {
+	Server = server{
 		port:      port,
 		Router:    httprouter.New(),
 		Couchbase: cb,
 	}
 }
 
-func (s *server) Run() error {
-	log.Fatal(http.ListenAndServe(s.port, s.Router))
+func Run() error {
+	log.Fatal(http.ListenAndServe(Server.port, Server.Router))
 	return nil
 }

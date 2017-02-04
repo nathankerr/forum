@@ -1,11 +1,9 @@
 package http
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"github.com/dhenkes/forum"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -23,15 +21,6 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 // 	usersJson, _ := json.Marshal(users)
 // 	fmt.Fprint(w, string(usersJson), "\n")
 // }
-
-// UsersGetByID prints user with specific ID.
-func (s *server) UsersGetByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	id := ps.ByName("id")
-	user := forum.User{}
-	s.Couchbase.Bucket.Get("u:"+id, &user)
-	jsonBytes, _ := json.Marshal(user)
-	fmt.Fprint(w, string(jsonBytes), "\n")
-}
 
 // // BoardsGetAll prints all boards.
 // func (s *server) BoardsGetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
