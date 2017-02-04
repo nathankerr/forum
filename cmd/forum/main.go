@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/dhenkes/forum/couchbase"
 	"github.com/dhenkes/forum/http"
-	"github.com/dhenkes/forum/mysql"
 )
 
-// Checks environment variables and continues if they are set.
-// If they are not set, the execution stops.
 func main() {
-	enVars := [4]string{"port", "user", "pass", "db"}
+	enVars := [4]string{"http_port", "cb_url", "cb_bucket", "cb_pass"}
 	notSet := 0
 
 	for _, enVar := range enVars {
@@ -25,33 +23,34 @@ func main() {
 		os.Exit(1)
 	}
 
-	port := os.Getenv("port")
-	username := os.Getenv("user")
-	password := os.Getenv("pass")
-	database := os.Getenv("db")
+	http_port := os.Getenv("http_port")
+	cb_url := os.Getenv("cb_url")
+	cb_bucket := os.Getenv("cb_bucket")
+	cb_pass := os.Getenv("cb_pass")
 
-	m := mysql.OpenConnection(username, password, database)
-	m.PingDatabase()
-	if m.Err != nil {
-		os.Exit(2)
-	}
-	m.CheckTables()
-	if m.Err != nil {
+	cb := couchbase.Connect(cb_url)
+	if cb.Err != nil {
+		fmt.Println(cb.Err)
 		os.Exit(2)
 	}
 
-	s := http.CreateServer(port)
-	s.UseMySQL(m)
-	s.Router.GET("/", http.Index)
-	s.Router.GET("/users", s.UsersGetAll)
+	cb.OpenBucket(cb_bucket, cb_pass)
+	if cb.Err != nil {
+		fmt.Println(cb.Err)
+		os.Exit(3)
+	}
+
+	s := http.CreateServer(http_port, cb)
+	// s.Router.GET("/", http.Index)
+	// s.Router.GET("/users", s.UsersGetAll)
 	s.Router.GET("/users/:id", s.UsersGetByID)
-	s.Router.GET("/boards", s.BoardsGetAll)
-	s.Router.GET("/boards/:id", s.BoardsGetByID)
-	s.Router.GET("/categories", s.CategoriesGetAll)
-	s.Router.GET("/categories/:id", s.CategoriesGetByID)
-	s.Router.GET("/threads", s.ThreadsGetAll)
-	s.Router.GET("/threads/:id", s.ThreadsGetByID)
-	s.Router.GET("/posts", s.PostsGetAll)
-	s.Router.GET("/posts/:id", s.PostsGetByID)
+	// s.Router.GET("/boards", s.BoardsGetAll)
+	// s.Router.GET("/boards/:id", s.BoardsGetByID)
+	// s.Router.GET("/categories", s.CategoriesGetAll)
+	// s.Router.GET("/categories/:id", s.CategoriesGetByID)
+	// s.Router.GET("/threads", s.ThreadsGetAll)
+	// s.Router.GET("/threads/:id", s.ThreadsGetByID)
+	// s.Router.GET("/posts", s.PostsGetAll)
+	// s.Router.GET("/posts/:id", s.PostsGetByID)
 	s.Run()
 }
