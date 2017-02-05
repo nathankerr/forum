@@ -1,37 +1,35 @@
 package users
 
-// func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-// 	start := time.Now()
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
 
-// 	overview := forum.Overview{}
-// 	fhttp.Server.Couchbase.Bucket.Get("f:overview", &overview)
+	"github.com/couchbase/gocb"
+	"github.com/dhenkes/forum"
+	"github.com/dhenkes/forum/couchbase"
+	"github.com/julienschmidt/httprouter"
+)
 
-// 	log.Printf("Time for GET request %s", time.Since(start))
-// 	start = time.Now()
+func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	overview := forum.Overview{}
+	couchbase.DB.Bucket.Get("f:overview", &overview)
 
-// 	var items []gocb.BulkOp
-// 	for i := 0; i < len(overview.Users); i++ {
-// 		items = append(items, &gocb.GetOp{Key: overview.Users[i], Value: &forum.User{}})
-// 	}
+	var items []gocb.BulkOp
+	for i := 0; i < len(overview.Users); i++ {
+		items = append(items, &gocb.GetOp{Key: overview.Users[i], Value: &forum.User{}})
+	}
 
-// 	log.Printf("Time for FOR loop %s", time.Since(start))
-// 	start = time.Now()
+	err := couchbase.DB.Bucket.Do(items)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-// 	err := fhttp.Server.Couchbase.Bucket.Do(items)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
+	var users []*forum.User
+	for i := 0; i < len(items); i++ {
+		users = append(users, items[i].(*gocb.GetOp).Value.(*forum.User))
+	}
 
-// 	log.Printf("Time for DO request %s", time.Since(start))
-// 	start = time.Now()
-
-// 	var users []*forum.User
-// 	for i := 0; i < len(items); i++ {
-// 		users = append(users, items[i].(*gocb.GetOp).Value.(*forum.User))
-// 	}
-
-// 	log.Printf("Time for second FOR loop %s", time.Since(start))
-
-// 	jsonBytes, _ := json.Marshal(users)
-// 	fmt.Fprint(w, string(jsonBytes), "\n")
-// }
+	jsonBytes, _ := json.Marshal(users)
+	fmt.Fprint(w, string(jsonBytes), "\n")
+}

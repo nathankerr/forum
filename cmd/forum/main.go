@@ -28,18 +28,18 @@ func main() {
 	cb_pass := os.Getenv("cb_pass")
 
 	couchbase.Connect(&cb_url)
-	if couchbase.Couchbase.Err != nil {
+	if couchbase.DB.Err != nil {
 		os.Exit(2)
 	}
 
 	couchbase.OpenBucket(&cb_bucket, &cb_pass)
-	if couchbase.Couchbase.Err != nil {
+	if couchbase.DB.Err != nil {
 		os.Exit(3)
 	}
 
 	http.CreateServer(&http_port)
 	http.Server.Router.GET("/users/:id", users.Get)
-	// http.Server.Router.GET("/users", users.GetAll)
+	http.Server.Router.GET("/users", users.GetAll)
 	// http.Server.Router.POST("/users", users.Create)
 	http.Run()
 }
