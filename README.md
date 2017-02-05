@@ -6,9 +6,10 @@ This repository contains the code of our backend forum api.
 
 Run the following command:
 
-`port="port" user="username" pass="password" db="database" go run main.go`
+`http_port=":port" cb_url="couchbase://url" cb_bucket="bucketname" cb_pass="bucketpassword" go run main.go`
 
 ## Error codes
 
-1: No environment variables are set
-2: Connection to database refused
+1. Not all environment variables are set
+2. Recheck the couchbase url
+3. Authentication error (the bucket does not exist or the password is wrong)

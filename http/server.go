@@ -5,24 +5,21 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/dhenkes/forum/couchbase"
 	"github.com/julienschmidt/httprouter"
 )
 
 type server struct {
-	ln        net.Listener
-	port      string
-	Router    *httprouter.Router
-	Couchbase *couchbase.Couchbase
+	ln     net.Listener
+	port   string
+	Router *httprouter.Router
 }
 
 var Server server
 
-func CreateServer(port string, cb *couchbase.Couchbase) {
+func CreateServer(port *string) {
 	Server = server{
-		port:      port,
-		Router:    httprouter.New(),
-		Couchbase: cb,
+		port:   *port,
+		Router: httprouter.New(),
 	}
 }
 

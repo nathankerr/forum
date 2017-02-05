@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/dhenkes/forum/couchbase"
@@ -15,7 +14,6 @@ func main() {
 
 	for _, enVar := range enVars {
 		if os.Getenv(enVar) == "" {
-			fmt.Println(enVar, "is not set.")
 			notSet++
 		}
 	}
@@ -29,19 +27,19 @@ func main() {
 	cb_bucket := os.Getenv("cb_bucket")
 	cb_pass := os.Getenv("cb_pass")
 
-	cb := couchbase.Connect(cb_url)
-	if cb.Err != nil {
-		fmt.Println(cb.Err)
+	couchbase.Connect(&cb_url)
+	if couchbase.Couchbase.Err != nil {
 		os.Exit(2)
 	}
 
-	cb.OpenBucket(cb_bucket, cb_pass)
-	if cb.Err != nil {
-		fmt.Println(cb.Err)
+	couchbase.OpenBucket(&cb_bucket, &cb_pass)
+	if couchbase.Couchbase.Err != nil {
 		os.Exit(3)
 	}
 
-	http.CreateServer(http_port, cb)
+	http.CreateServer(&http_port)
 	http.Server.Router.GET("/users/:id", users.Get)
+	// http.Server.Router.GET("/users", users.GetAll)
+	// http.Server.Router.POST("/users", users.Create)
 	http.Run()
 }

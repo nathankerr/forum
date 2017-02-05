@@ -2,7 +2,7 @@ package utils
 
 import "golang.org/x/crypto/bcrypt"
 
-// HashPassword generate hash from plaintext.
+// HashPassword generates a hash from a plaintext string.
 func HashPassword(plaintext string) ([]byte, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(plaintext), bcrypt.DefaultCost)
 	if err != nil {
@@ -11,7 +11,7 @@ func HashPassword(plaintext string) ([]byte, error) {
 	return hash, nil
 }
 
-// CheckHash compares hash with plaintext.
+// CheckHash compares the hash with a plaintext string.
 func CheckHash(hash []byte, plaintext []byte) error {
 	err := bcrypt.CompareHashAndPassword(hash, plaintext)
 	if err != nil {

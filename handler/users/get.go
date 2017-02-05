@@ -6,14 +6,17 @@ import (
 	"net/http"
 
 	"github.com/dhenkes/forum"
-	fhttp "github.com/dhenkes/forum/http"
+	"github.com/dhenkes/forum/couchbase"
 	"github.com/julienschmidt/httprouter"
 )
 
 func Get(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 	user := forum.User{}
-	fhttp.Server.Couchbase.Bucket.Get("u:"+id, &user)
+	_, err := couchbase.Couchbase.Bucket.Get("u:"+id, &user)
+	if err != nil {
+		fmt.Println(err)
+	}
 	jsonBytes, _ := json.Marshal(user)
 	fmt.Fprint(w, string(jsonBytes), "\n")
 }
