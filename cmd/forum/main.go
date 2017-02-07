@@ -40,6 +40,6 @@ func main() {
 	http.CreateServer(&http_port)
 	http.Server.Router.GET("/users/:id", users.Get)
 	http.Server.Router.GET("/users", users.GetAll)
-	// http.Server.Router.POST("/users", users.Create)
+	http.Server.Router.POST("/users", users.Create)
 	http.Run()
 }
