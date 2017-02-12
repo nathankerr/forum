@@ -16,9 +16,9 @@ type server struct {
 
 var Server server
 
-func CreateServer(port *string) {
+func CreateServer(port string) {
 	Server = server{
-		port:   *port,
+		port:   port,
 		Router: httprouter.New(),
 	}
 }

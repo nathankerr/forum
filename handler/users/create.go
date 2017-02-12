@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/couchbase"
@@ -11,39 +12,43 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-type user struct {
-	Username string
-	Password string
-}
-
 func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	decoder := json.NewDecoder(r.Body)
 
-	var u user
-	err := decoder.Decode(&u)
-
+	var newUser forum.NewUser
+	err := decoder.Decode(&newUser)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	var hash []byte
-	hash, _ = utils.HashPassword(u.Password)
-	hashString := string(hash[:])
+	newUser.Username = strings.ToLower(newUser.Username)
+	newUser.Username = strings.TrimSpace(newUser.Username)
+	uuid := utils.GenerateUUID(newUser.Username)
 
-	u.Password = hashString
-
-	var userCheck user
-	_, err = couchbase.DB.Bucket.Get("u:"+u.Username, &userCheck)
+	var user forum.User
+	err = couchbase.Get("u:"+uuid, &user)
 	if err == nil {
-		fmt.Println("User does exist")
+		fmt.Fprint(w, string("User already exists"), "\n")
+		return
 	}
 
-	overview := forum.Overview{}
-	couchbase.DB.Bucket.Get("f:overview", &overview)
-	overview.Users = append(overview.Users, "u:"+u.Username)
-	_, err = couchbase.DB.Bucket.Upsert("f:overview", &overview, 0)
+	var hash []byte
+	hash, _ = utils.HashPassword(newUser.Password)
+	hashString := string(hash[:])
+	newUser.Password = hashString
 
-	couchbase.DB.Bucket.Insert("u:"+u.Username, u, 0)
+	users := forum.Users{}
+	couchbase.Get("f:users", &users)
+	users.Users = append(users.Users, "u:"+uuid)
+	err = couchbase.Upsert("f:users", &users, 0)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = couchbase.Insert("u:"+uuid, newUser, 0)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	fmt.Fprint(w, string("User created"), "\n")
 }

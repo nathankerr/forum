@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/dhenkes/forum/couchbase"
@@ -19,7 +20,7 @@ func main() {
 	}
 
 	if notSet > 0 {
-		os.Exit(1)
+		log.Fatal("Error: Not all environment variables are set.")
 	}
 
 	http_port := os.Getenv("http_port")
@@ -27,17 +28,17 @@ func main() {
 	cb_bucket := os.Getenv("cb_bucket")
 	cb_pass := os.Getenv("cb_pass")
 
-	couchbase.Connect(&cb_url)
-	if couchbase.DB.Err != nil {
-		os.Exit(2)
+	err := couchbase.Connect(cb_url)
+	if err != nil {
+		log.Fatal("Error: Connection with Couchbase not possible.")
 	}
 
-	couchbase.OpenBucket(&cb_bucket, &cb_pass)
-	if couchbase.DB.Err != nil {
-		os.Exit(3)
+	err = couchbase.OpenBucket(cb_bucket, cb_pass)
+	if err != nil {
+		log.Fatal("Error: Connection with Bucket not possible.")
 	}
 
-	http.CreateServer(&http_port)
+	http.CreateServer(http_port)
 	http.Server.Router.GET("/users/:id", users.Get)
 	http.Server.Router.GET("/users", users.GetAll)
 	http.Server.Router.POST("/users", users.Create)

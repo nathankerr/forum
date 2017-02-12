@@ -4,20 +4,19 @@ import "github.com/couchbase/gocb"
 
 type database struct {
 	cluster *gocb.Cluster
-	Bucket  *gocb.Bucket
-	Err     error
+	bucket  *gocb.Bucket
 }
 
-var DB database
+var db database
 
-func Connect(url *string) {
-	cluster, err := gocb.Connect(*url)
-	DB = database{
-		cluster: cluster,
-		Err:     err,
-	}
+func Connect(url string) error {
+	cluster, err := gocb.Connect(url)
+	db = database{cluster: cluster}
+	return err
 }
 
-func OpenBucket(bucket *string, password *string) {
-	DB.Bucket, DB.Err = DB.cluster.OpenBucket(*bucket, *password)
+func OpenBucket(bucket string, password string) error {
+	var err error
+	db.bucket, err = db.cluster.OpenBucket(bucket, password)
+	return err
 }

@@ -13,7 +13,7 @@ import (
 func Get(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 	user := forum.User{}
-	_, err := couchbase.DB.Bucket.Get("u:"+id, &user)
+	err := couchbase.Get("u:"+id, &user)
 	if err != nil {
 		fmt.Println(err)
 	}

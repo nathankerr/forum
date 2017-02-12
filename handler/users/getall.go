@@ -12,15 +12,10 @@ import (
 )
 
 func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	overview := forum.Overview{}
-	couchbase.DB.Bucket.Get("f:overview", &overview)
+	userlist := forum.Users{}
+	couchbase.Get("f:users", &userlist)
 
-	var items []gocb.BulkOp
-	for i := 0; i < len(overview.Users); i++ {
-		items = append(items, &gocb.GetOp{Key: overview.Users[i], Value: &forum.User{}})
-	}
-
-	err := couchbase.DB.Bucket.Do(items)
+	items, err := couchbase.GetAll(userlist.Users, &forum.User{})
 	if err != nil {
 		fmt.Println(err)
 	}
