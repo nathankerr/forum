@@ -9,6 +9,7 @@ import (
 	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/couchbase"
 	"github.com/dhenkes/forum/utils"
+	"github.com/dhenkes/forum/uuid"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -23,7 +24,7 @@ func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	newUser.Username = strings.ToLower(newUser.Username)
 	newUser.Username = strings.TrimSpace(newUser.Username)
-	uuid := utils.GenerateUUID(newUser.Username)
+	uuid := uuid.NewV5(newUser.Username)
 
 	var user forum.User
 	err = couchbase.Get("u:"+uuid, &user)

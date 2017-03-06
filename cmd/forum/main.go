@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/dhenkes/forum/http"
@@ -20,7 +19,9 @@ func main() {
 	}
 
 	if notSet > 0 {
-		log.Fatal("Error: Not all environment variables are set.")
+		fmt.Println("Error: Not all environment variables are set.")
+		fmt.Println("Error: http_port, db_host, db_user, db_pass, db_name")
+		return
 	}
 
 	http_port := os.Getenv("http_port")
@@ -32,16 +33,14 @@ func main() {
 	err := postgres.Connect(db_host, db_user, db_pass, db_name)
 	if err != nil {
 		fmt.Println("Error: Could not open connection to PostgreSQL.")
-		fmt.Printf("Error: ")
-		fmt.Println(err)
+		fmt.Println("Error:", err)
 		return
 	}
 
 	err = postgres.Ping()
 	if err != nil {
 		fmt.Println("Error: Could not ping PostgreSQL.")
-		fmt.Printf("Error: ")
-		fmt.Println(err)
+		fmt.Println("Error:", err)
 		return
 	}
 
