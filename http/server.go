@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -17,6 +18,9 @@ type server struct {
 var Server server
 
 func CreateServer(port string) {
+	if strings.HasPrefix(port, ":") == false {
+		port = ":" + port
+	}
 	Server = server{
 		port:   port,
 		Router: httprouter.New(),

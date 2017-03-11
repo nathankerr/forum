@@ -1,52 +1,45 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 
+	"github.com/dhenkes/forum/handler/users"
 	"github.com/dhenkes/forum/http"
+	"github.com/dhenkes/forum/logging"
 	"github.com/dhenkes/forum/postgres"
 )
 
 func main() {
-	enVars := [5]string{"http_port", "db_host", "db_user", "db_pass", "db_name"}
-	notSet := 0
 
-	for _, enVar := range enVars {
-		if os.Getenv(enVar) == "" {
-			notSet++
-		}
-	}
+	m := make(map[string]string)
+	getInput(m)
 
-	if notSet > 0 {
-		fmt.Println("Error: Not all environment variables are set.")
-		fmt.Println("Error: http_port, db_host, db_user, db_pass, db_name")
-		return
-	}
-
-	http_port := os.Getenv("http_port")
-	db_host := os.Getenv("db_host")
-	db_user := os.Getenv("db_user")
-	db_pass := os.Getenv("db_pass")
-	db_name := os.Getenv("db_name")
-
-	err := postgres.Connect(db_host, db_user, db_pass, db_name)
+	err := postgres.Connect(m["db_host"], m["db_user"], m["db_pass"], m["db_name"])
 	if err != nil {
-		fmt.Println("Error: Could not open connection to PostgreSQL.")
-		fmt.Println("Error:", err)
+		logging.PrintError("Could not open connection to PostgreSQL.")
 		return
 	}
 
 	err = postgres.Ping()
 	if err != nil {
-		fmt.Println("Error: Could not ping PostgreSQL.")
-		fmt.Println("Error:", err)
+		logging.PrintError("Could not ping PostgreSQL.")
+		logging.PrintError(err.Error())
 		return
 	}
 
-	http.CreateServer(http_port)
-	// http.Server.Router.GET("/users/:id", users.Get)
-	// http.Server.Router.GET("/users", users.GetAll)
-	// http.Server.Router.POST("/users", users.Create)
+	http.CreateServer(m["http_port"])
+	http.Server.Router.GET("/users/:id", users.Get)
+	http.Server.Router.GET("/users", users.GetAll)
 	http.Run()
+}
+
+func getInput(m map[string]string) {
+	scanner := bufio.NewScanner(os.Stdin)
+	for _, v := range [5]string{"http_port", "db_host", "db_user", "db_pass", "db_name"} {
+		fmt.Print(v, ": ")
+		scanner.Scan()
+		m[v] = scanner.Text()
+	}
 }
