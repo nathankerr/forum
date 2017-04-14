@@ -1,18 +1,9 @@
 package forum
 
-type Information struct {
-	Title string
-}
-
-type Users struct {
-	Users []string
-}
-
 type User struct {
-	Username string `json:"username"`
-}
-
-type NewUser struct {
-	User
-	Password string `json:"password"`
+	Uuid     string `json:"uuid" db:"uuid"`
+	Username string `json:"username" db:"username"`
+	Password string `json:"-"`
+	Created  int    `json:"created" db:"created"`
+	Removed  int    `json:"removed" db:"removed"`
 }
