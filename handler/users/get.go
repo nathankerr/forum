@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/dhenkes/forum"
-	"github.com/dhenkes/forum/logging"
+	"github.com/dhenkes/forum/logger"
 	"github.com/dhenkes/forum/postgres"
 	"github.com/julienschmidt/httprouter"
 )
@@ -18,8 +18,8 @@ func Get(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	err := postgres.Get(&user, "SELECT uuid, username FROM users WHERE uuid = $1 AND removed = $2", ps.ByName("id"), "0")
 	if err != nil {
-		logging.PrintWarning("Error during Request: SELECT uuid, username FROM users WHERE uuid = " + ps.ByName("id") + " AND removed = 0")
-		logging.PrintWarning(err.Error())
+		logger.Warning("%s", "Error during Request: SELECT uuid, username FROM users WHERE uuid = "+ps.ByName("id")+" AND removed = 0")
+		logger.Warning("%s", err.Error())
 
 		w.WriteHeader(http.StatusNotFound)
 
