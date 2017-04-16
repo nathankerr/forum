@@ -18,25 +18,3 @@ func Ping() error {
 	err = db.Ping()
 	return err
 }
-
-func QueryRow(dest interface{}, query string, args ...interface{}) error {
-	err := db.QueryRowx(query, args...).StructScan(dest)
-	return err
-}
-
-func Query(dest []interface{}, class interface{}, query string, args ...interface{}) error {
-	rows, err := db.Queryx(query, args...)
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		err = rows.StructScan(&class)
-		if err != nil {
-			return err
-		}
-		dest = append(dest, class)
-	}
-	return nil
-}
