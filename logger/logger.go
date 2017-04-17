@@ -21,6 +21,10 @@ func Debug(format string, a ...interface{}) {
 	print("Debug", format, a...)
 }
 
+func API(format string, a ...interface{}) {
+	print("API", format, a...)
+}
+
 func print(category string, format string, a ...interface{}) {
 	var colour string
 	reset := "\x1b[0m"
@@ -35,6 +39,8 @@ func print(category string, format string, a ...interface{}) {
 		colour = "\x1b[33m"
 	case "Debug":
 		colour = "\x1b[34m"
+	case "API":
+		colour = "\x1b[35m"
 	}
 
 	fmt.Printf("%s%s - %s%s: ", colour, now, category, reset)

@@ -2,9 +2,7 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
-	"time"
 
 	"github.com/dhenkes/forum/handler/users"
 	"github.com/dhenkes/forum/http"
@@ -27,18 +25,10 @@ func checkEnv(config map[string]string) {
 func getInput(config map[string]string) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for _, v := range notSet {
-		logAPIMsg(v + ": ")
+		logger.API(v + ": ")
 		scanner.Scan()
 		config[v] = scanner.Text()
 	}
-}
-
-func logAPIMsg(message string) {
-	colour := "\x1b[35m"
-	reset := "\x1b[0m"
-	now := time.Now().Format("2006-01-02 15:04:05")
-
-	fmt.Printf("%s%s - API%s: %s", colour, now, reset, message)
 }
 
 func main() {
@@ -46,8 +36,8 @@ func main() {
 
 	checkEnv(config)
 	if len(notSet) > 0 {
-		logAPIMsg("Not all environment variables set.\n")
-		logAPIMsg("Please enter the value(s) for the following variable(s).\n")
+		logger.API("Not all environment variables set.\n")
+		logger.API("Please enter the value(s) for the following variable(s).\n")
 		getInput(config)
 	}
 
