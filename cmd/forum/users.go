@@ -9,7 +9,6 @@ import (
 
 	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/logger"
-	"github.com/dhenkes/forum/postgres"
 	"github.com/dhenkes/forum/uuid"
 	"github.com/julienschmidt/httprouter"
 )
@@ -50,7 +49,7 @@ func getAllUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	users := []forum.User{}
 
-	err := postgres.SelectUsers(&users, "SELECT uuid, username FROM users WHERE removed = $1", "0")
+	err := postgres.Select(&users, "SELECT uuid, username FROM users WHERE removed = $1", "0")
 	if err != nil {
 		logger.Warning("%s", "Error during Request: SELECT uuid, username FROM users WHERE removed = 0")
 		logger.Warning("%s", err.Error())
@@ -91,7 +90,7 @@ func createUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	err = postgres.Insert("INSERT INTO users(uuid, username, password, created) VALUES($1,$2,$3, $4)", message.Uuid, message.Username, message.Password, message.Created)
+	_, err = postgres.Exec("INSERT INTO users(uuid, username, password, created) VALUES($1,$2,$3, $4)", message.Uuid, message.Username, message.Password, message.Created)
 	if err != nil {
 		fmt.Println(err)
 		output := CouldNotInsert(w)

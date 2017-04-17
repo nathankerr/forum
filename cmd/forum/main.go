@@ -7,9 +7,12 @@ import (
 	"strings"
 
 	"github.com/dhenkes/forum/logger"
-	"github.com/dhenkes/forum/postgres"
+	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
+	_ "github.com/lib/pq"
 )
+
+var postgres *sqlx.DB
 
 func loadConfig() map[string]string {
 	config := map[string]string{}
@@ -42,7 +45,8 @@ func main() {
 
 	logger.Info("%s", "Starting API")
 
-	err := postgres.Connect(config["db_host"], config["db_user"], config["db_pass"], config["db_name"])
+	var err error
+	postgres, err = sqlx.Connect("postgres", "postgres://"+config["db_user"]+":"+config["db_pass"]+"@"+config["db_host"]+"/"+config["db_name"]+"?sslmode=disable")
 	if err != nil {
 		logger.Error("%s", "Could not open connection to PostgreSQL.")
 		return
