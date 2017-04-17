@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dhenkes/forum/handler/users"
 	"github.com/dhenkes/forum/logger"
 	"github.com/dhenkes/forum/postgres"
 	"github.com/julienschmidt/httprouter"
@@ -64,9 +63,9 @@ func main() {
 	logger.Info("%s %s", "Starting server with port", config["http_port"])
 
 	router := httprouter.New()
-	router.GET("/users/:id", users.Get)
-	router.GET("/users", users.GetAll)
-	router.POST("/users", users.Post)
+	router.GET("/users/:id", getUser)
+	router.GET("/users", getAllUsers)
+	router.POST("/users", createUser)
 
 	logger.Info("%s", "Registered route [GET] /users/:id")
 	logger.Info("%s", "Registered route [GET] /users")
