@@ -1,4 +1,4 @@
-package forum
+package main
 
 type User struct {
 	Uuid     string `json:"uuid" db:"uuid"`

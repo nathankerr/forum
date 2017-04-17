@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dhenkes/forum"
 	"github.com/dhenkes/forum/logger"
 	"github.com/dhenkes/forum/uuid"
 	"github.com/julienschmidt/httprouter"
@@ -16,7 +15,7 @@ import (
 func getUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 
-	user := forum.User{}
+	user := User{}
 
 	err := postgres.Get(&user, "SELECT uuid, username FROM users WHERE uuid = $1 AND removed = $2", ps.ByName("id"), "0")
 	if err != nil {
@@ -25,8 +24,8 @@ func getUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 		w.WriteHeader(http.StatusNotFound)
 
-		response := forum.Response{
-			Error: &forum.Error{
+		response := Response{
+			Error: &Error{
 				Code:    http.StatusNotFound,
 				Message: "NOT_FOUND",
 			},
@@ -35,7 +34,7 @@ func getUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		js, _ := json.Marshal(response)
 		fmt.Fprint(w, string(js), "\n")
 	} else {
-		response := forum.Response{
+		response := Response{
 			Data: user,
 		}
 
@@ -47,7 +46,7 @@ func getUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func getAllUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 
-	users := []forum.User{}
+	users := []User{}
 
 	err := postgres.Select(&users, "SELECT uuid, username FROM users WHERE removed = $1", "0")
 	if err != nil {
@@ -72,7 +71,7 @@ func createUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	var message forum.User
+	var message User
 	err = json.Unmarshal(body, &message)
 	if err != nil {
 		output := CouldNotReadBody(w)
@@ -104,8 +103,8 @@ func createUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func CouldNotReadBody(w http.ResponseWriter) []byte {
 	w.WriteHeader(http.StatusInternalServerError)
 
-	response := forum.Response{
-		Error: &forum.Error{
+	response := Response{
+		Error: &Error{
 			Code:    http.StatusNotFound,
 			Message: "COULD_NOT_READ_BODY",
 		},
@@ -118,8 +117,8 @@ func CouldNotReadBody(w http.ResponseWriter) []byte {
 func CouldNotInsert(w http.ResponseWriter) []byte {
 	w.WriteHeader(http.StatusInternalServerError)
 
-	response := forum.Response{
-		Error: &forum.Error{
+	response := Response{
+		Error: &Error{
 			Code:    http.StatusNotFound,
 			Message: "COULD_NOT_INSERT_INTO_DB",
 		},
