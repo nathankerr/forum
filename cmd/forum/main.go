@@ -6,10 +6,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/dhenkes/dobo/postgres"
 	"github.com/dhenkes/forum/handler/users"
 	"github.com/dhenkes/forum/http"
 	"github.com/dhenkes/forum/logger"
+	"github.com/dhenkes/forum/postgres"
 )
 
 var configVars = [5]string{"http_port", "db_host", "db_user", "db_pass", "db_name"}
