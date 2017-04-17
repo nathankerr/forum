@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dhenkes/forum/logger"
 	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"

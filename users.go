@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dhenkes/forum/logger"
 	"github.com/dhenkes/forum/uuid"
 	"github.com/julienschmidt/httprouter"
 )
