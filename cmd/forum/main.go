@@ -2,12 +2,14 @@ package main
 
 import (
 	"bufio"
+	"net/http"
 	"os"
+	"strings"
 
 	"github.com/dhenkes/forum/handler/users"
-	"github.com/dhenkes/forum/http"
 	"github.com/dhenkes/forum/logger"
 	"github.com/dhenkes/forum/postgres"
+	"github.com/julienschmidt/httprouter"
 )
 
 func loadConfig() map[string]string {
@@ -56,16 +58,19 @@ func main() {
 	}
 	logger.Info("%s", "Pinged PostgreSQL")
 
-	http.CreateServer(config["http_port"])
+	if !strings.HasPrefix(config["http_port"], ":") {
+		config["http_port"] = ":" + config["http_port"]
+	}
 	logger.Info("%s %s", "Starting server with port", config["http_port"])
 
-	http.Server.Router.GET("/users/:id", users.Get)
-	http.Server.Router.GET("/users", users.GetAll)
-	http.Server.Router.POST("/users", users.Post)
+	router := httprouter.New()
+	router.GET("/users/:id", users.Get)
+	router.GET("/users", users.GetAll)
+	router.POST("/users", users.Post)
 
 	logger.Info("%s", "Registered route [GET] /users/:id")
 	logger.Info("%s", "Registered route [GET] /users")
 	logger.Info("%s", "Registered route [POST] /users")
 
-	http.Run()
+	logger.Error(http.ListenAndServe(config["http_port"], router).Error())
 }
