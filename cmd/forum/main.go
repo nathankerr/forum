@@ -10,36 +10,34 @@ import (
 	"github.com/dhenkes/forum/postgres"
 )
 
-var configVars = [5]string{"http_port", "db_host", "db_user", "db_pass", "db_name"}
-var notSet []string
+func loadConfig() map[string]string {
+	config := map[string]string{}
 
-func checkEnv(config map[string]string) {
-	for _, v := range configVars {
+	var notSet []string
+	for _, v := range []string{"http_port", "db_host", "db_user", "db_pass", "db_name"} {
 		config[v] = os.Getenv(v)
 		if len(config[v]) == 0 {
 			notSet = append(notSet, v)
 		}
 	}
-}
 
-func getInput(config map[string]string) {
-	scanner := bufio.NewScanner(os.Stdin)
-	for _, v := range notSet {
-		logger.API(v + ": ")
-		scanner.Scan()
-		config[v] = scanner.Text()
-	}
-}
-
-func main() {
-	config := make(map[string]string)
-
-	checkEnv(config)
 	if len(notSet) > 0 {
 		logger.API("Not all environment variables set.\n")
 		logger.API("Please enter the value(s) for the following variable(s).\n")
-		getInput(config)
+
+		scanner := bufio.NewScanner(os.Stdin)
+		for _, v := range notSet {
+			logger.API(v + ": ")
+			scanner.Scan()
+			config[v] = scanner.Text()
+		}
 	}
+
+	return config
+}
+
+func main() {
+	config := loadConfig()
 
 	logger.Info("%s", "Starting API")
 
